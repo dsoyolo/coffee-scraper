@@ -28,6 +28,9 @@ dev = [
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+markers = [
+    "network: live HTTP tests — run with pytest -m network (skipped by default)",
+]
 
 [tool.uv]
 package = false
