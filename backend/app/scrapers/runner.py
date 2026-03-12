@@ -7,6 +7,7 @@ import yaml
 
 from app.models import Product
 from app.scrapers.base import BaseScraper
+from app.scrapers.shopify import ShopifyJsonScraper
 
 logger = logging.getLogger(__name__)
 
@@ -19,13 +20,21 @@ def load_supplier_configs(path: Path = _SUPPLIERS_FILE) -> list[dict]:
     return data.get("suppliers", [])
 
 
+def build_scraper(config: dict) -> BaseScraper | ShopifyJsonScraper:
+    """Return the right scraper instance based on the supplier's 'type' field."""
+    supplier_type = config.get("type", "html")
+    if supplier_type == "shopify":
+        return ShopifyJsonScraper(config)
+    return BaseScraper(config)
+
+
 async def run_all_scrapers(configs: list[dict] | None = None) -> list[Product]:
     """Scrape all configured suppliers concurrently and return all products."""
     if configs is None:
         configs = load_supplier_configs()
 
     async def _scrape_one(config: dict) -> list[Product]:
-        scraper = BaseScraper(config)
+        scraper = build_scraper(config)
         try:
             products = await scraper.scrape()
             logger.info("Scraped %d products from %s", len(products), config["name"])

@@ -1,8 +1,16 @@
 # Supplier configuration
 # Add your preferred coffee suppliers here.
-# Each entry defines where to scrape and which CSS selectors to use.
+#
+# type: shopify  — uses the Shopify /products.json API (no selectors needed)
+# type: html     — (default) HTML scraper driven by CSS selectors
 
 suppliers:
+  - name: "Detour Coffee"
+    type: shopify
+    base_url: "https://detourcoffee.com"
+    products_url: "https://detourcoffee.com/collections/direct-trade-coffee"
+    currency: "CAD"
+
   - name: "Square Mile Coffee"
     base_url: "https://shop.squaremilecoffee.com"
     products_url: "https://shop.squaremilecoffee.com/collections/coffee"

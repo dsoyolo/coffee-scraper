@@ -1,8 +1,7 @@
 import re
-from abc import ABC, abstractmethod
 from decimal import Decimal, InvalidOperation
 from typing import Optional
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 
 import httpx
 from bs4 import BeautifulSoup, Tag
@@ -38,8 +37,8 @@ def _parse_price(raw: str) -> Optional[Decimal]:
     return None
 
 
-class BaseScraper(ABC):
-    """Base class that all supplier scrapers inherit from."""
+class BaseScraper:
+    """HTML scraper for suppliers configured with CSS selectors."""
 
     def __init__(self, config: dict):
         self.name: str = config["name"]
