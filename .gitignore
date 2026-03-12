@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/.env*
+
+# CDK
+infra/cdk.out/
+infra/.venv/
+
+# AWS
+.aws-sam/
+*.zip
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Env files
+.env
+.env.*
+!.env.example

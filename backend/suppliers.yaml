@@ -1,0 +1,40 @@
+# Supplier configuration
+# Add your preferred coffee suppliers here.
+# Each entry defines where to scrape and which CSS selectors to use.
+
+suppliers:
+  - name: "Square Mile Coffee"
+    base_url: "https://shop.squaremilecoffee.com"
+    products_url: "https://shop.squaremilecoffee.com/collections/coffee"
+    currency: "GBP"
+    selectors:
+      product_list: ".product-item"
+      name: ".product-item__title"
+      price: ".price__regular .price-item--regular"
+      availability: ".product-item__sold-out"  # present when sold out
+      sale_badge: ".price__badge--sale"
+      image: ".product-item__image img"
+
+  - name: "Has Bean Coffee"
+    base_url: "https://www.hasbean.co.uk"
+    products_url: "https://www.hasbean.co.uk/collections/coffee"
+    currency: "GBP"
+    selectors:
+      product_list: ".product-item"
+      name: ".product-item__title"
+      price: ".price-item--regular"
+      availability: ".sold-out-badge"
+      sale_badge: ".price__badge--sale"
+      image: ".product-item__image img"
+
+  - name: "Workshop Coffee"
+    base_url: "https://workshopcoffee.com"
+    products_url: "https://workshopcoffee.com/collections/coffee"
+    currency: "GBP"
+    selectors:
+      product_list: ".product-card"
+      name: ".product-card__name"
+      price: ".product-card__price"
+      availability: ".product-card__sold-out"
+      sale_badge: ".product-card__sale"
+      image: ".product-card__image img"
