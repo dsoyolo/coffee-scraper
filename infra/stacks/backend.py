@@ -30,23 +30,25 @@ class BackendStack(Construct):
             "AWS_REGION": "eu-west-1",
         }
 
+        # uv exports production deps; pip installs them into the Lambda package dir.
+        _bundle_cmd = (
+            "pip install uv --quiet"
+            " && uv export --frozen --no-dev --no-hashes -o /tmp/requirements.txt"
+            " && pip install -r /tmp/requirements.txt -t /asset-output --quiet"
+            " && cp -r . /asset-output"
+        )
+        _bundling = {
+            "image": _lambda.Runtime.PYTHON_3_12.bundling_image,
+            "command": ["bash", "-c", _bundle_cmd],
+        }
+
         # API Lambda — serves FastAPI app
         self.api_function = _lambda.Function(
             self,
             "ApiFunction",
             runtime=_lambda.Runtime.PYTHON_3_12,
             handler="lambda_handler.handler",
-            code=_lambda.Code.from_asset(
-                _BACKEND_DIR,
-                bundling={
-                    "image": _lambda.Runtime.PYTHON_3_12.bundling_image,
-                    "command": [
-                        "bash",
-                        "-c",
-                        "pip install -r requirements.txt -t /asset-output && cp -r . /asset-output",
-                    ],
-                },
-            ),
+            code=_lambda.Code.from_asset(_BACKEND_DIR, bundling=_bundling),
             memory_size=512,
             timeout=Duration.seconds(30),
             environment=env_vars,
@@ -59,17 +61,7 @@ class BackendStack(Construct):
             "ScraperFunction",
             runtime=_lambda.Runtime.PYTHON_3_12,
             handler="lambda_handler.handler",
-            code=_lambda.Code.from_asset(
-                _BACKEND_DIR,
-                bundling={
-                    "image": _lambda.Runtime.PYTHON_3_12.bundling_image,
-                    "command": [
-                        "bash",
-                        "-c",
-                        "pip install -r requirements.txt -t /asset-output && cp -r . /asset-output",
-                    ],
-                },
-            ),
+            code=_lambda.Code.from_asset(_BACKEND_DIR, bundling=_bundling),
             memory_size=512,
             timeout=Duration.minutes(5),
             environment=env_vars,

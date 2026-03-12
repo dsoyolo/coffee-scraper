@@ -28,6 +28,7 @@ Tracks your favourite coffees across preferred suppliers, highlights availabilit
 | Database  | AWS DynamoDB |
 | Infra     | AWS CDK (Python) |
 | Hosting   | Lambda + API Gateway, S3 + CloudFront |
+| Package mgmt | [uv](https://docs.astral.sh/uv/) |
 
 ## Project Layout
 
@@ -41,7 +42,8 @@ coffee-scraper/
 │   │   └── services/     # DynamoDB, digest, comparison logic
 │   ├── tests/
 │   ├── suppliers.yaml    # Supplier config (URLs, selectors)
-│   ├── requirements.txt
+│   ├── pyproject.toml    # deps managed by uv
+│   ├── uv.lock
 │   └── lambda_handler.py
 ├── frontend/
 │   ├── src/
@@ -54,19 +56,30 @@ coffee-scraper/
 └── infra/
     ├── app.py            # CDK app entry point
     ├── stacks/           # CDK stacks
-    └── requirements.txt
+    ├── pyproject.toml    # deps managed by uv
+    └── uv.lock
 ```
 
 ## Getting Started
+
+### Prerequisites
+
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/):
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 
 ### Local development
 
 ```bash
 # Backend
 cd backend
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+uv sync                        # creates .venv and installs all deps
+uv run uvicorn app.main:app --reload
+
+# Run tests
+uv run pytest
 
 # Frontend
 cd frontend
@@ -78,9 +91,23 @@ npm run dev
 
 ```bash
 cd infra
-pip install -r requirements.txt
-cdk bootstrap
-cdk deploy --all
+uv sync
+uv run cdk bootstrap
+uv run cdk deploy --all
+```
+
+### Dependency management
+
+```bash
+# Add a runtime dependency
+uv add <package>
+
+# Add a dev-only dependency
+uv add --dev <package>
+
+# Upgrade all deps
+uv lock --upgrade
+uv sync
 ```
 
 ## Adding a Supplier
